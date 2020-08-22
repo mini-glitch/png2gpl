@@ -8,18 +8,15 @@ proc main() =
     echo "png2gpl [source]"
     return
 
-  let png = loadPNG24(paramStr(1))
-  echo "width: ", png.width
-  echo "height: ", png.height
-
-  let outputName = paramStr(1).splitFile().name & ".gpl"
-  var outputFile = open(outputName, fmWrite)
+  let outputName = paramStr(1).splitFile().name
+  var outputFile = open(outputName & ".gpl", fmWrite)
 
   outputFile.writeLine("GIMP Palatte")
   outputFile.writeLine(fmt"Name: {outputName}")
   outputFile.writeLine("#")
 
   var colorIndex = 0
+  let png = loadPNG24(paramStr(1))
   let pixels = cast[seq[uint8]](png.data)
   for i in countup(0, pixels.len - 1, 3):
     let r = pixels[i]
@@ -29,5 +26,6 @@ proc main() =
     colorIndex += 1
     
   outputFile.close()
+  echo "Palette extraction completed."
 
 main()
